@@ -1,47 +1,40 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Pizza from "./Pizza";
 
+// feel free to change en-US / USD to your locale
 const intl = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
 
 export default function Order() {
-  const [pizzaTypes, setPizzaTypes] = useState([]);
   const [pizzaType, setPizzaType] = useState("pepperoni");
   const [pizzaSize, setPizzaSize] = useState("M");
+  const [pizzaTypes, setPizzaTypes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   let price, selectedPizza;
-
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
-    console.log("selectedPizza = > ", selectedPizza);
-    console.log("sizes = > ", selectedPizza.sizes);
-    console.log("pizzaSize = > ", pizzaSize);
-    console.log(
-      "selectedPizza.sizes[pizzaSize] = > ",
-      selectedPizza.sizes[pizzaSize],
+    price = intl.format(
+      selectedPizza.sizes ? selectedPizza.sizes[pizzaSize] : "",
     );
-    price = intl.format(selectedPizza.sizes[pizzaSize]);
-    console.log("price = > ", price);
   }
 
+  useEffect(() => {
+    fetchPizzaTypes();
+  }, []);
+
   async function fetchPizzaTypes() {
-    const pizzaRes = await fetch("/api/pizzas");
-    // const pizzaRes = await fetch(`${import.meta.env.VITE_API_URL}/api/pizzas`);
-    const pizzaJson = await pizzaRes.json();
-    setPizzaTypes(pizzaJson);
+    const pizzasRes = await fetch("/api/pizzas");
+    const pizzasJson = await pizzasRes.json();
+    setPizzaTypes(pizzasJson);
     setLoading(false);
   }
-  useEffect(() => {
-    // We don't directly make the useEffect function async, but we call call from inside it.
-    fetchPizzaTypes();
-  }, []); // The empty array ensures this runs only once after the initial render.
+
   return (
     <div className="order">
-      <h2>Please place your order</h2>
+      <h2>Create Order</h2>
       <form>
         <div>
           <div>
@@ -97,19 +90,19 @@ export default function Order() {
             </div>
           </div>
           <button type="submit">Add to Cart</button>
-          <div className="order-pizza">
-            {loading ? (
-              <h2>Loading...</h2>
-            ) : (
-              <Pizza
-                name={selectedPizza.name}
-                description={selectedPizza.description}
-                image={selectedPizza.image}
-              />
-            )}
-            <p>{price}</p>
-          </div>
         </div>
+        {loading ? (
+          <h3>LOADING …</h3>
+        ) : (
+          <div className="order-pizza">
+            <Pizza
+              name={selectedPizza.name}
+              description={selectedPizza.description}
+              image={selectedPizza.image}
+            />
+            <p>Price: {price}</p>
+          </div>
+        )}
       </form>
     </div>
   );
