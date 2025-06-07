@@ -1,13 +1,38 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pizza from "./Pizza";
 
-export default function Order() {
-//   const pizzaType = "pepperoni";
-//   const pizzaSize = "M";
-    const [pizzaType, setPizzaType] = useState("pepperoni");
-    const [pizzaSize, setPizzaSize] = useState("M");
+const intl = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
+export default function Order() {
+  const [pizzaTypes, setPizzaTypes] = useState([]);
+  const [pizzaType, setPizzaType] = useState("pepperoni");
+  const [pizzaSize, setPizzaSize] = useState("M");
+  const [loading, setLoading] = useState(true);
+
+  let price, selectedPizza;
+
+  if (!loading) {
+    selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
+    price = selectedPizza.sizes[pizzaSize];
+  }
+
+  async function fetchPizzaTypes() {
+    const pizzaRes = await fetch("/api/pizzas");
+    // const pizzaRes = await fetch(`${import.meta.env.VITE_API_URL}/api/pizzas`);
+    console.log("pizzaRes", pizzaRes);
+    const pizzaJson = await pizzaRes.json();
+    console.log("pizzaJson", pizzaJson);
+    setPizzaTypes(pizzaJson);
+    setLoading(false);
+  }
+  useEffect(() => {
+    // We don't directly make the useEffect function async, but we call call from inside it.
+    fetchPizzaTypes();
+  }, []); // The empty array ensures this runs only once after the initial render.
   return (
     <div className="order">
       <h2>Please place your order</h2>
@@ -15,12 +40,18 @@ export default function Order() {
         <div>
           <div>
             <label htmlFor="pizza-type">Pizza Type</label>
-            <select 
-             onChange={(e) => setPizzaType(e.target.value)}
-            name="pizza-type" value={pizzaType}>
-              <option value="pepperoni"> The Pepperoni Pizza</option>
-              <option value="margherita"> The Margherita Pizza</option>
-              <option value="bbq_ckn"> The BBQ Chicken Pizza</option>
+            <select
+              onChange={(e) => setPizzaType(e.target.value)}
+              name="pizza-type"
+              value={pizzaType}
+            >
+              {
+                pizzaTypes.map((pizza) => (
+                    <option key={pizza.id} value={pizza.id}>
+                        {pizza.name}
+                    </option>
+                ))
+              }
             </select>
           </div>
           <div>
@@ -28,8 +59,7 @@ export default function Order() {
             <div>
               <span>
                 <input
-                
-                 onChange={(e) => setPizzaSize(e.target.value)}
+                  onChange={(e) => setPizzaSize(e.target.value)}
                   checked={pizzaSize === "S"}
                   type="radio"
                   name="pizza-size"
@@ -40,7 +70,7 @@ export default function Order() {
               </span>
               <span>
                 <input
-                 onChange={(e) => setPizzaSize(e.target.value)}
+                  onChange={(e) => setPizzaSize(e.target.value)}
                   checked={pizzaSize === "M"}
                   type="radio"
                   name="pizza-size"
@@ -51,7 +81,7 @@ export default function Order() {
               </span>
               <span>
                 <input
-                 onChange={(e) => setPizzaSize(e.target.value)}
+                  onChange={(e) => setPizzaSize(e.target.value)}
                   checked={pizzaSize === "L"}
                   type="radio"
                   name="pizza-size"
@@ -62,14 +92,14 @@ export default function Order() {
               </span>
             </div>
           </div>
-        <button type="submit">Add to Cart</button>
-        <div className="order-pizza">
+          <button type="submit">Add to Cart</button>
+          <div className="order-pizza">
             <Pizza
-                name="Pepperoni Pizza"
-                description="Mozzarella Cheese, Pepperoni"
-                image={"/public/pizzas/pepperoni.webp"}
+              name="Pepperoni Pizza"
+              description="Mozzarella Cheese, Pepperoni"
+              image={"/public/pizzas/pepperoni.webp"}
             />
-        </div>
+          </div>
         </div>
       </form>
     </div>
