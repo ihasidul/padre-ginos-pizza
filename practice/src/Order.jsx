@@ -17,15 +17,21 @@ export default function Order() {
 
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
-    price = selectedPizza.sizes[pizzaSize];
+    console.log("selectedPizza = > ", selectedPizza);
+    console.log("sizes = > ", selectedPizza.sizes);
+    console.log("pizzaSize = > ", pizzaSize);
+    console.log(
+      "selectedPizza.sizes[pizzaSize] = > ",
+      selectedPizza.sizes[pizzaSize],
+    );
+    price = intl.format(selectedPizza.sizes[pizzaSize]);
+    console.log("price = > ", price);
   }
 
   async function fetchPizzaTypes() {
     const pizzaRes = await fetch("/api/pizzas");
     // const pizzaRes = await fetch(`${import.meta.env.VITE_API_URL}/api/pizzas`);
-    console.log("pizzaRes", pizzaRes);
     const pizzaJson = await pizzaRes.json();
-    console.log("pizzaJson", pizzaJson);
     setPizzaTypes(pizzaJson);
     setLoading(false);
   }
@@ -45,13 +51,11 @@ export default function Order() {
               name="pizza-type"
               value={pizzaType}
             >
-              {
-                pizzaTypes.map((pizza) => (
-                    <option key={pizza.id} value={pizza.id}>
-                        {pizza.name}
-                    </option>
-                ))
-              }
+              {pizzaTypes.map((pizza) => (
+                <option key={pizza.id} value={pizza.id}>
+                  {pizza.name}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -94,11 +98,16 @@ export default function Order() {
           </div>
           <button type="submit">Add to Cart</button>
           <div className="order-pizza">
-            <Pizza
-              name="Pepperoni Pizza"
-              description="Mozzarella Cheese, Pepperoni"
-              image={"/public/pizzas/pepperoni.webp"}
-            />
+            {loading ? (
+              <h2>Loading...</h2>
+            ) : (
+              <Pizza
+                name={selectedPizza.name}
+                description={selectedPizza.description}
+                image={selectedPizza.image}
+              />
+            )}
+            <p>{price}</p>
           </div>
         </div>
       </form>
