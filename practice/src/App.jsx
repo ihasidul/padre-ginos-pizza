@@ -1,9 +1,12 @@
 import { StrictMode } from "react";
 import React from "react";
+import { useState } from "react";
 import { createRoot } from "react-dom/client";
 // import Pizza from "./Pizza";
 import Order from "./Order";
 import PizzaOfTheDay from "./PizzaOfTheDay";
+import Header from "./Header";
+import { CartContext } from "./contexts";
 
 // const App = () => {
 //   return (
@@ -34,13 +37,17 @@ import PizzaOfTheDay from "./PizzaOfTheDay";
 // };
 
 const App = () => {
+  const cartHook = useState([]);
   return (
     <StrictMode>
-      <div>
-        <h1>Fire Pizza</h1>
-        <Order />
-        <PizzaOfTheDay />
-      </div>
+      <CartContext.Provider value={cartHook}>
+        <div>
+          {/* <h1 className="logo">Padre Gino's </h1> */}
+          <Header />
+          <Order />
+          <PizzaOfTheDay />
+        </div>
+      </CartContext.Provider>
     </StrictMode>
   );
 };

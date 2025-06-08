@@ -5,9 +5,8 @@ const intl = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-
 export default function PizzaOfTheDay() {
-const pizzaOfTheDay = usePizzaOfTheDay();
+  const pizzaOfTheDay = usePizzaOfTheDay();
   if (!pizzaOfTheDay) {
     return <div>Loading...</div>;
   }
