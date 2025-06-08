@@ -1,14 +1,3 @@
-import React from "react";
-
-/* 
-This is a React component that displays a pizza's name and description.
-const Pizza = (props) => {
-  return React.createElement("div", {}, [
-    React.createElement("h1", {}, props.name),
-    React.createElement("p", {}, props.description),
-  ]);
-};
- */
 const Pizza = (props) => {
   return (
     <div className="pizza">
