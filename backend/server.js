@@ -210,7 +210,6 @@ server.post("/api/order", async function createOrder(req, res) {
 });
 
 server.get("/api/past-orders", async function getPastOrders(req, res) {
-  await new Promise((resolve) => setTimeout(resolve, 5000)); // Added this artificial delay to try out tanstack query cache on the frontend
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = 20;

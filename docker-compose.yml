@@ -4,13 +4,20 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./backend/backend-data:/app/backend-data # Persist SQLite DB on host
+      - ./backend:/app # Mount entire backend for local development
+      - /app/node_modules # Exclude node_modules from host mount
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      target: build # Use the build stage from the Dockerfile
     ports:
-      - "8080:80"
-    depends_on:
-      - backend
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host
