@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { createLazyRoute } from "@tanstack/react-router";
+import { createLazyRoute, createLazyFileRoute } from "@tanstack/react-router";
 import Pizza from "../Pizza";
 import Cart from "../Cart";
 import { CartContext } from "../contexts";

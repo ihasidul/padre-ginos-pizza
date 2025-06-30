@@ -25,3 +25,12 @@ A modern React application for browsing and ordering delicious pizzas.
 
 - **Environment Variables:**  
   You can use a `.env` file for custom API URLs (see Vite docs).
+
+## TODO:
+
+- Dockerize both frontend and backend using docker and Docker compose
+- Create infrastructure resources on Azure using terraform
+- Install the softwares needed to run the project using Ansible
+
+Deploy Help reference:
+https://www.youtube.com/watch?v=T1WxrEwyyKU
