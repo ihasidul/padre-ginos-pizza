@@ -53,6 +53,6 @@ jobs:
       - name: Run Ansible playbook
         working-directory: ./deployments/ansible
         run: |
-          ansible-playbook playbook.yml --inventory "${{ secrets.SERVER_IP }}," --user adminuser --private-key ~/.ssh/id_ed25519
+          ansible-playbook playbook.yml --inventory "${{ secrets.SERVER_IP }}," --user adminuser --private-key ~/.ssh/id_ed25519 --extra-vars "ghcr_username=${{ github.actor }} ghcr_password=${{ secrets.GITHUB_TOKEN }}"
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}

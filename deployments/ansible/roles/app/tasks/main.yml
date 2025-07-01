@@ -20,6 +20,12 @@
     src: ../../../../deployments/nginx/default.conf
     dest: /opt/app/deployments/nginx/default.conf
 
+- name: Log in to GitHub Container Registry
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_password }}"
+
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/app
