@@ -19,6 +19,15 @@
     src: ../../../../backend
     dest: /opt/app
 
+- name: List contents of /opt/app
+  ansible.builtin.command: ls -la /opt/app
+  register: ls_opt_app
+  changed_when: false
+
+- name: Debug /opt/app contents
+  ansible.builtin.debug:
+    var: ls_opt_app.stdout_lines
+
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/app
