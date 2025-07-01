@@ -12,4 +12,6 @@
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/app
+    files:
+      - docker-compose.prod.yml
     state: present
