@@ -4,6 +4,10 @@ node_modules/
 
 ### Ansible ###
 *.retry
+*vault.yml
+
+### Database ###
+backend/backend-data/pizza.sqlite
 
 ### Terraform ###
 # Local .terraform directories
