@@ -9,6 +9,16 @@
     src: ../../../../docker-compose.prod.yml
     dest: /opt/app/docker-compose.prod.yml
 
+- name: Copy frontend directory
+  copy:
+    src: ../../../../frontend
+    dest: /opt/app
+
+- name: Copy backend directory
+  copy:
+    src: ../../../../backend
+    dest: /opt/app
+
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/app
