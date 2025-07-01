@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
@@ -15,16 +15,17 @@ jobs:
         run: pip install ansible
 
       - name: Set up SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          # Add the server's host key to known_hosts to avoid interactive prompts
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "${{ secrets.SERVER_IP }}" >> ~/.ssh/known_hosts
 
       - name: Run Ansible playbook
         working-directory: ./deployments/ansible
         run: |
-          ansible-playbook playbook.yml --inventory "${{ secrets.SERVER_IP }}," --user adminuser --extra-vars "ansible_ssh_private_key_file=~/.ssh/id_rsa"
+          ansible-playbook playbook.yml --inventory "${{ secrets.SERVER_IP }}," --user adminuser --private-key ~/.ssh/id_ed25519
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
