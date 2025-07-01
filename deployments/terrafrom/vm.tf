@@ -29,6 +29,26 @@ resource "azurerm_public_ip" "padre" {
   }
 }
 
+resource "azurerm_network_security_group" "padre" {
+  name                = "padre-nsg"
+  location            = azurerm_resource_group.padre.location
+  resource_group_name = azurerm_resource_group.padre.name
+}
+
+resource "azurerm_network_security_rule" "ssh_allow" {
+  name                        = "SSH"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.padre.name
+  network_security_group_name = azurerm_network_security_group.padre.name
+}
+
 resource "azurerm_network_interface" "padre" {
   name                = "padre-nic"
   location            = azurerm_resource_group.padre.location
@@ -41,6 +61,11 @@ resource "azurerm_network_interface" "padre" {
     private_ip_address            = "10.0.2.5"
     public_ip_address_id          = azurerm_public_ip.padre.id
   }
+}
+
+resource "azurerm_network_interface_security_group_association" "padre" {
+  network_interface_id      = azurerm_network_interface.padre.id
+  network_security_group_id = azurerm_network_security_group.padre.id
 }
 
 resource "azurerm_linux_virtual_machine" "padre" {
