@@ -1,14 +1,14 @@
 version: "3.8"
 services:
   backend:
-    build: ./backend
+    image: ghcr.io/ihasidul/padre-ginos-pizza-backend:latest
     volumes:
       - ./backend/backend-data:/app/backend-data
     environment:
       - NODE_ENV=production
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/ihasidul/padre-ginos-pizza-frontend:latest
     environment:
       - NODE_ENV=production
 

@@ -39,13 +39,6 @@
   ansible.builtin.debug:
     var: ls_opt_app.stdout_lines
 
-- name: Build Docker images
-  community.docker.docker_compose_v2:
-    project_src: /opt/app
-    files:
-      - docker-compose.prod.yml
-    build: always
-
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/app

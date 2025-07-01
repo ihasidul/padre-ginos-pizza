@@ -14,6 +14,27 @@ jobs:
       - name: Install Ansible
         run: pip install ansible
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/ihasidul/padre-ginos-pizza-backend:latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/ihasidul/padre-ginos-pizza-frontend:latest
+
       - name: Set up SSH key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
