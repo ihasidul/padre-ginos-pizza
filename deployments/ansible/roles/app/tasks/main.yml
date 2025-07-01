@@ -19,6 +19,11 @@
     src: ../../../../backend
     dest: /opt/app
 
+- name: Copy deployments directory
+  copy:
+    src: ../../../../deployments
+    dest: /opt/app
+
 - name: List contents of /opt/app
   ansible.builtin.command: ls -la /opt/app
   register: ls_opt_app
@@ -27,6 +32,13 @@
 - name: Debug /opt/app contents
   ansible.builtin.debug:
     var: ls_opt_app.stdout_lines
+
+- name: Build Docker images
+  community.docker.docker_compose_v2:
+    project_src: /opt/app
+    files:
+      - docker-compose.prod.yml
+    build: always
 
 - name: Start application
   community.docker.docker_compose_v2:
