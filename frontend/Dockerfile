@@ -9,11 +9,13 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:alpine
+# This final stage contains only the build artifacts and a minimal OS.
+# It doesn't run a web server.
+FROM alpine:latest
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY ../deployments/nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copy the built assets from the 'build' stage.
+COPY --from=build /app/dist /app/dist
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# The container will start, allow Docker to copy the data to the volume,
+# and then exit.
+CMD ["/bin/true"]
