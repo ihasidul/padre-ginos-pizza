@@ -19,10 +19,11 @@
     src: ../../../../backend
     dest: /opt/app
 
-- name: Copy deployments directory
+- name: Copy nginx default.conf
   copy:
-    src: ../../../../deployments
-    dest: /opt/app
+    src: ../../../../deployments/nginx/default.conf
+    dest: /opt/app/deployments/nginx/default.conf
+    create_parents: yes
 
 - name: List contents of /opt/app
   ansible.builtin.command: ls -la /opt/app
