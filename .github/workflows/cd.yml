@@ -44,7 +44,7 @@ jobs:
           script: |
             set -e
             cd /opt/app
-            git pull
+            # git pull
             docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
             docker-compose -f docker-compose.prod.yml pull
             docker-compose -f docker-compose.prod.yml up -d --remove-orphans
