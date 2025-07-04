@@ -109,3 +109,7 @@ resource "azurerm_linux_virtual_machine" "padre" {
     version   = "latest"
   }
 }
+
+output "public_ip_address" {
+  value = azurerm_public_ip.padre.ip_address
+}

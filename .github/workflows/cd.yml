@@ -12,47 +12,39 @@ jobs:
       packages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Ansible
-        run: pip install ansible
+        uses: actions/checkout@v4
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push backend image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: true
           tags: ghcr.io/ihasidul/padre-ginos-pizza-backend:latest
 
       - name: Build and push frontend image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
           tags: ghcr.io/ihasidul/padre-ginos-pizza-frontend:latest
 
-      - name: Set up SSH key
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-        run: |
-          set -euxo pipefail
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          echo "SERVER_IP is: $SERVER_IP"
-          ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
-
-      - name: Run Ansible playbook
-        working-directory: ./deployments/ansible
-        run: |
-          ansible-playbook playbook.yml --inventory "${{ secrets.SERVER_IP }}," --user adminuser --private-key ~/.ssh/id_ed25519 --extra-vars "ghcr_username=${{ github.actor }} ghcr_password=${{ secrets.GITHUB_TOKEN }}"
-        env:
-          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: adminuser
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /opt/app
+            git pull
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker-compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml up -d --remove-orphans

@@ -23,8 +23,8 @@
 - name: Log in to GitHub Container Registry
   community.docker.docker_login:
     registry_url: ghcr.io
-    username: "{{ ghcr_username }}"
-    password: "{{ ghcr_password }}"
+    username: "{{ lookup('env', 'GHCR_USERNAME') }}"
+    password: "{{ lookup('env', 'GHCR_PASSWORD') }}"
 
 - name: Start application
   community.docker.docker_compose_v2:
