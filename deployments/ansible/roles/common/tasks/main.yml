@@ -6,5 +6,12 @@
 
 - name: Install common packages
   apt:
-    name: ["apt-transport-https", "ca-certificates", "curl", "software-properties-common", "python3-pip", "vim", "git"]
+    name: ["apt-transport-https", "ca-certificates", "curl", "software-properties-common", "python3-pip", "git"]
     state: present
+
+- name: Clone application repository
+  git:
+    repo: https://github.com/ihasidul/padre-ginos-pizza.git  # Replace with your repository URL if different
+    dest: /opt/app
+    version: main  # Or the branch you want to deploy
+    accept_hostkey: yes

@@ -1,0 +1,7 @@
+---
+- name: Clone application repository
+  git:
+    repo: https://github.com/ihasidul/padre-ginos-pizza.git  # Replace with your repository URL if different
+    dest: /opt/app
+    version: main  # Or the branch you want to deploy
+    accept_hostkey: yes
