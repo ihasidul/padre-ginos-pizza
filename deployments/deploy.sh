@@ -23,17 +23,7 @@ echo "📝 Updating Ansible inventory..."
 echo "$SERVER_IP" > ansible/inventory/hosts
 echo "✅ Inventory updated."
 
-# --- Step 3: Provision Server ---
-echo "🔧 Provisioning server with Ansible..."
 cd ansible
-# It can take a minute for a new VM to be ready for SSH.
-# This loop will retry the connection until it succeeds.
-until ansible-playbook provision.yml; do
-  echo "Ansible provisioning failed. Retrying in 15 seconds..."
-  sleep 15
-done
-echo "✅ Server provisioned."
-
 # --- Step 4: Deploy Application ---
 echo "🚀 Deploying application..."
 ansible-playbook playbook.yml
