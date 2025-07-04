@@ -55,4 +55,4 @@ jobs:
           username: adminuser
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "docker-compose.prod.yml"
-          target: "/opt/app/docker-compose.prod.yml
+          target: "/opt/app/docker-compose.prod.yml"
