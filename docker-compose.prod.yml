@@ -16,7 +16,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ${PWD}/deployments/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ${PWD}/deployments/nginx/:/etc/nginx/conf.d/
+      # - ${PWD}/deployments/nginx/:/etc/nginx/conf.d/
       - frontend-dist:/usr/share/nginx/html
     depends_on:
       - frontend-builder
