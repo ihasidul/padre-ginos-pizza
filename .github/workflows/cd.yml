@@ -34,6 +34,7 @@ jobs:
           context: ./frontend
           push: true
           tags: ghcr.io/ihasidul/padre-ginos-pizza-frontend:latest
+          no-cache: true
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
