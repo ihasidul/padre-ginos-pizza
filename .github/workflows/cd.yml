@@ -47,6 +47,8 @@ jobs:
             cd /opt/app
             sudo git pull 
             sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            sudo docker compose -f /opt/app/docker-compose.prod.yml down
+            sudo docker volume rm -f frontend-dist || true
             sudo docker compose -f /opt/app/docker-compose.prod.yml pull
             sudo docker compose -f /opt/app/docker-compose.prod.yml up -d --remove-orphans
             sudo docker image prune -f
