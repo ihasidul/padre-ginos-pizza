@@ -47,8 +47,37 @@ jobs:
             cd /opt/app
             sudo git pull 
             sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+            # Stop all services
             sudo docker compose -f /opt/app/docker-compose.prod.yml down
-            sudo docker volume rm -f frontend-dist || true
+
+            # Remove the frontend volume to force refresh
+            sudo docker volume rm app_frontend-dist || true
+
+            # Pull latest images
             sudo docker compose -f /opt/app/docker-compose.prod.yml pull
+
+            # Start services
             sudo docker compose -f /opt/app/docker-compose.prod.yml up -d --remove-orphans
+
+            # Wait for frontend-builder to complete
+            echo "Waiting for frontend-builder to complete..."
+            sleep 15
+
+            # Check frontend-builder logs
+            echo "Frontend-builder logs:"
+            sudo docker compose -f /opt/app/docker-compose.prod.yml logs frontend-builder
+
+            # Check if files were copied
+            echo "Checking frontend volume contents:"
+            sudo docker run --rm -v app_frontend-dist:/data alpine ls -la /data
+
+            # Restart nginx to ensure it picks up new files
+            sudo docker compose -f /opt/app/docker-compose.prod.yml restart nginx
+
+            # Final verification
+            echo "Final check - nginx html folder:"
+            sudo docker compose -f /opt/app/docker-compose.prod.yml exec nginx ls -la /usr/share/nginx/html
+
+            # Cleanup
             sudo docker image prune -f

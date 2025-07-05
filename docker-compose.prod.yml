@@ -9,7 +9,17 @@ services:
   frontend-builder:
     image: ghcr.io/ihasidul/padre-ginos-pizza-frontend:latest
     volumes:
-      - frontend-dist:/app/dist
+      - frontend-dist:/shared
+    command: |
+      sh -c "
+        echo 'Copying frontend files from /app/dist...'
+        ls -la /app/dist/
+        cp -r /app/dist/* /shared/
+        echo 'Files copied successfully. Shared volume contents:'
+        ls -la /shared/
+        echo 'Frontend builder finished'
+      "
+    restart: "no"
 
   nginx:
     image: nginx:alpine
@@ -17,11 +27,12 @@ services:
       - "80:80"
     volumes:
       - ${PWD}/deployments/nginx/:/etc/nginx/conf.d/
-      # - ${PWD}/deployments/nginx/:/etc/nginx/conf.d/
       - frontend-dist:/usr/share/nginx/html
     depends_on:
-      - frontend-builder
-      - backend
+      frontend-builder:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
 
 volumes:
   frontend-dist:
