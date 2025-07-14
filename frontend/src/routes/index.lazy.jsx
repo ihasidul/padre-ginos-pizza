@@ -10,7 +10,7 @@ function Index() {
       <div className="index-brand">
         <h1>Padre Gino's</h1>
         {/* <p>Pizza & Art at a location near you</p> */}
-        <p>Demo Tag line</p>
+        <p>This is a live demo</p>
       </div>
       <ul>
         <li>
